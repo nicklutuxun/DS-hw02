@@ -66,15 +66,21 @@ public class SparseIndexedList<T> implements IndexedList<T> {
   public void put(int index, T value) throws IndexException {
     // TODO
     if (!isValid(index)) throw new IndexException("ERROR: INDEX NOT VALID");
-  
-    Node<T> newNode = new Node<T>(index, value);
+    
     Node<T> tracker = head;
-    if (tracker == null) {
-      head = newNode;
-      return;
+    // value is not default
+    if (value != defaultValue) {
+      Node<T> newNode = new Node<T>(index, value);
+      if (tracker == null) {
+        head = newNode;
+        return;
+      }
+      tracker = find(index - 1);
+      tracker.next = newNode;
+    } else {
+      tracker = find(index - 1);
+      tracker.next = null;
     }
-    tracker = find(index-1);
-    tracker.next = newNode;
   }
 
   @Override
