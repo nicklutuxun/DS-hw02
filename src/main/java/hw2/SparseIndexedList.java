@@ -25,9 +25,11 @@ public class SparseIndexedList<T> implements IndexedList<T> {
    * @param defaultValue Default value to store in each slot.
    * @throws LengthException if size <= 0.
    */
+  
   public SparseIndexedList(int size, T defaultValue) throws LengthException {
-    // TODO
-    if (size <= 0) throw new LengthException("ERROR: SIZE CANNOT <= 0");
+    if (size <= 0) {
+      throw new LengthException("ERROR: SIZE CANNOT <= 0");
+    }
     this.length = size;
     this.defaultValue = defaultValue;
   }
@@ -42,13 +44,22 @@ public class SparseIndexedList<T> implements IndexedList<T> {
       throw new IndexException("ERROR: INDEX NOT VALID");
     }
     
-    Node<T> node = head;
-    int counter = 0;
-    while (node != null && counter < index-1) {
-      node = node.next;
-      counter = counter + 1;
+    Node<T> tracker = head;
+    if (tracker == null) {
+      return null;
     }
-    return node;
+    for (int i = 1; i <= index; i++) {
+      if (tracker.next == null) {
+        break;
+      }
+      if (tracker.index == index && i == index) {
+        break;
+      }
+      if (tracker.index == i && tracker.next.index < index) {
+        tracker = tracker.next;
+      }
+    }
+    return tracker;
   }
   
   private boolean isValid(int index) {
@@ -57,30 +68,62 @@ public class SparseIndexedList<T> implements IndexedList<T> {
   
   @Override
   public T get(int index) throws IndexException {
-    // TODO
-    Node<T> tracker = find(index-1);
-    return tracker.next.data;
+    Node<T> tracker = find(index);
+    if (tracker == null || tracker.index != index) {
+      return defaultValue;
+    }
+    return tracker.data;
   }
 
   @Override
   public void put(int index, T value) throws IndexException {
-    // TODO
-    if (!isValid(index)) throw new IndexException("ERROR: INDEX NOT VALID");
+    if (!isValid(index)) {
+      throw new IndexException("ERROR: INDEX NOT VALID");
+    }
     
     Node<T> tracker = head;
     // value is not default
     if (value != defaultValue) {
-      Node<T> newNode = new Node<T>(index, value);
       if (tracker == null) {
-        head = newNode;
+        head = new Node<T>(index, value);
+        return;
+      } else if (find(index).index != index) {
+        tracker = find(index);
+        tracker.next = new Node<T>(index, value);
+      } else {
+        tracker = find(index);
+        tracker.data = value;
+      }
+    } else {
+      tracker = find(index);
+      if (tracker == null) {
         return;
       }
-      tracker = find(index - 1);
-      tracker.next = newNode;
-    } else {
-      tracker = find(index - 1);
       tracker.next = null;
     }
+    
+//    Node<T> tracker = find(index);
+//    if (tracker == null) {
+//      if (value != defaultValue) {
+//        head = new Node<T>(index, value);
+//      } else {
+//        return;
+//      }
+//    } else {
+//      if (value != defaultValue) {
+//        if (find(index).index != index) {
+//          tracker.next = new Node<T>(index, value);
+//        } else {
+//          tracker.data = value;
+//        }
+//      } else {
+//        if (find(index).index != index) {
+//          return;
+//        } else {
+//          tracker.data = value;
+//        }
+//      }
+//    }
   }
 
   @Override
@@ -97,14 +140,15 @@ public class SparseIndexedList<T> implements IndexedList<T> {
     
     @Override
     public boolean hasNext() {
-      // TODO
       return current != null;
     }
 
     @Override
     public T next() throws NoSuchElementException {
       // TODO
-      if (!hasNext()) throw new NoSuchElementException();
+      if (!hasNext()) {
+        throw new NoSuchElementException();
+      }
       T t = current.data;
       current = current.next;
       return t;
@@ -117,7 +161,7 @@ public class SparseIndexedList<T> implements IndexedList<T> {
     int index;
     Node<T> next;
   
-    public Node(int index, T data) {
+    Node(int index, T data) {
       this.data = data;
       this.index = index;
       this.next = null;
