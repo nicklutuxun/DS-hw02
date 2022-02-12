@@ -89,17 +89,27 @@ public class SparseIndexedList<T> implements IndexedList<T> {
   }
 
   private class SparseIndexedListIterator implements Iterator<T> {
+    private Node<T> current;
+  
+    SparseIndexedListIterator() {
+      current = head;
+    }
+    
     @Override
     public boolean hasNext() {
       // TODO
-      return false;
+      return current != null;
     }
 
     @Override
     public T next() throws NoSuchElementException {
       // TODO
-      return null;
+      if (!hasNext()) throw new NoSuchElementException();
+      T t = current.data;
+      current = current.next;
+      return t;
     }
+    
   }
   
   private static class Node<T> {
