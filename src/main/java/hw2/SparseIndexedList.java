@@ -13,7 +13,10 @@ import java.util.NoSuchElementException;
  * @param <T> Element type.
  */
 public class SparseIndexedList<T> implements IndexedList<T> {
-
+  
+  private Node<T> head;
+  private T defaultValue;
+  private int length;
   /**
    * Constructs a new SparseIndexedList of length size
    * with default value of defaultValue.
@@ -24,23 +27,53 @@ public class SparseIndexedList<T> implements IndexedList<T> {
    */
   public SparseIndexedList(int size, T defaultValue) throws LengthException {
     // TODO
+    if (size <= 0) throw new LengthException("ERROR: SIZE CANNOT <= 0");
+    this.length = size;
+    this.defaultValue = defaultValue;
   }
 
   @Override
   public int length() {
-    // TODO
-    return 0;
+    return length;
   }
-
+  
+  private Node<T> find(int index) throws IndexException {
+    if (!isValid(index)) {
+      throw new IndexException("ERROR: INDEX NOT VALID");
+    }
+    
+    Node<T> node = head;
+    int counter = 0;
+    while (node != null && counter < index-1) {
+      node = node.next;
+      counter = counter + 1;
+    }
+    return node;
+  }
+  
+  private boolean isValid(int index) {
+    return index >= 0 && index < length();
+  }
+  
   @Override
   public T get(int index) throws IndexException {
     // TODO
+    
     return null;
   }
 
   @Override
   public void put(int index, T value) throws IndexException {
     // TODO
+    if (!isValid(index)) throw new IndexException("ERROR: INDEX NOT VALID");
+    
+    Node<T> tracker = find(index-1);
+    Node<T> newNode = new Node<>(index, value);
+    if (head == null) {
+      head = newNode;
+    } else {
+      tracker.next = newNode;
+    }
   }
 
   @Override
@@ -59,6 +92,18 @@ public class SparseIndexedList<T> implements IndexedList<T> {
     public T next() throws NoSuchElementException {
       // TODO
       return null;
+    }
+  }
+  
+  private static class Node<T> {
+    T data;
+    int index;
+    Node<T> next;
+  
+    public Node(int index, T data) {
+      this.data = data;
+      this.index = index;
+      this.next = null;
     }
   }
 }
