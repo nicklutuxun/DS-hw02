@@ -39,6 +39,13 @@ public class SparseIndexedList<T> implements IndexedList<T> {
     return length;
   }
   
+  private boolean hasNextNode(Node<T> node) {
+    if (node == null || node.next == null) {
+      return false;
+    }
+    return true;
+  }
+  
   private Node<T> find(int index) throws IndexException {
     // Index out of bound
     if (!isValid(index)) {
@@ -49,9 +56,8 @@ public class SparseIndexedList<T> implements IndexedList<T> {
     if (tracker == null) {
       return null;
     }
-  
-    Iterator<T> it = iterator();
-    while (it.hasNext()) {
+    
+    while (hasNextNode(tracker)) {
       if (tracker.next.index < index) {
         tracker = tracker.next;
       }
@@ -65,7 +71,7 @@ public class SparseIndexedList<T> implements IndexedList<T> {
       }
     }
     
-    return null;
+    return tracker;
 
 //    Node<T> tracker = head;
 //    if (tracker == null) {
@@ -87,8 +93,7 @@ public class SparseIndexedList<T> implements IndexedList<T> {
   
   private Node<T> traverse(int index) {
     Node<T> tracker = head;
-    Iterator<T> it = iterator();
-    while (it.hasNext()) {
+    while (hasNextNode(tracker)) {
       if (tracker.next.index >= index) {
         return tracker;
       }
@@ -137,7 +142,7 @@ public class SparseIndexedList<T> implements IndexedList<T> {
       if (value == defaultValue) {
         tracker.next = tracker.next.next;
       } else {
-        tracker.next.data = value;
+        node.data = value;
       }
     }
     
@@ -196,30 +201,37 @@ public class SparseIndexedList<T> implements IndexedList<T> {
 
   private class SparseIndexedListIterator implements Iterator<T> {
     private Node<T> current;
+    private int cursor;
   
     SparseIndexedListIterator() {
       current = head;
+      cursor = 1;
     }
     
-    @Override
+     @Override
     public boolean hasNext() {
-      return current.next != null;
+      return cursor <= length;
     }
 
     @Override
     public T next() throws NoSuchElementException {
-      // TODO
-      if (!hasNext()) {
-        throw new NoSuchElementException();
+      T data = defaultValue;
+      if (hasNext()) {
+        if (current == null) {
+        } else if (cursor == current.index) {
+          data = current.data;
+          if (hasNextNode(current)) {
+            current = current.next;
+          }
+        }
+        cursor++;
       }
-      T t = current.data;
-      current = current.next;
-      return t;
+      return data;
     }
     
   }
   
-  private static class Node<T> {
+  private class Node<T> {
     T data;
     int index;
     Node<T> next;
