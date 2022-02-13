@@ -97,48 +97,6 @@ public class SparseIndexedList<T> implements IndexedList<T> {
         tracker.data = value;
       }
     }
-    
-    // No element with the index
-//    if (tracker.next == null || tracker.next.index != index) {
-//      if (value == defaultValue) {
-//        return;
-//      }
-//      newNode.next = tracker.next;
-//      tracker.next = newNode;
-//    } else {
-//      if (value == defaultValue) {
-//        if (head == tracker) {
-//          head = tracker.next;
-//        } else {
-//          tracker.next = tracker.next.next;
-//        }
-//      } else {
-//        tracker.data = value;
-//      }
-//    }
-//    // Element is in the list
-//    if (tracker.index == index) {
-//      if (value == defaultValue) {
-//        if (head == tracker) {
-//          head = tracker.next;
-//        } else {
-//          tracker.next = tracker.next.next;
-//        }
-//      } else {
-//        tracker.data = value;
-//      }
-//    } else {
-//      if (value == defaultValue) {
-//        return;
-//      }
-//      if (tracker.index > index) {
-//        head = newNode;
-//        newNode.next = tracker;
-//      } else {
-//        newNode.next = tracker.next;
-//        tracker.next = newNode;
-//      }
-//    }
   }
   
   private void addNode(int index, T value) {
