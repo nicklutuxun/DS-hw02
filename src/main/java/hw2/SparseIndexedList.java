@@ -105,7 +105,7 @@ public class SparseIndexedList<T> implements IndexedList<T> {
     Node<T> target = find(index);
     if (head == null || target.index > index) {
       if (head != null) {
-        newNode.next = head.next;
+        newNode.next = head;
       }
       head = newNode;
     } else {
