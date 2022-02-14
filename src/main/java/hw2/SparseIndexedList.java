@@ -134,7 +134,7 @@ public class SparseIndexedList<T> implements IndexedList<T> {
       head = null;
       return;
     }
-    target.next = null;
+    target.next = target.next.next;
   }
 
   @Override
@@ -153,7 +153,7 @@ public class SparseIndexedList<T> implements IndexedList<T> {
     
     @Override
     public boolean hasNext() {
-      return cursor < length;
+      return cursor < length && cursor >= 0;
     }
 
     @Override
