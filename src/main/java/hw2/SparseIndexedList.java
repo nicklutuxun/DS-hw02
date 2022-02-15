@@ -13,10 +13,10 @@ import java.util.NoSuchElementException;
  * @param <T> Element type.
  */
 public class SparseIndexedList<T> implements IndexedList<T> {
-  
   private Node<T> head;
   private T defaultValue;
   private int length;
+  
   /**
    * Constructs a new SparseIndexedList of length size
    * with default value of defaultValue.
@@ -25,7 +25,6 @@ public class SparseIndexedList<T> implements IndexedList<T> {
    * @param defaultValue Default value to store in each slot.
    * @throws LengthException if size <= 0.
    */
-  
   public SparseIndexedList(int size, T defaultValue) throws LengthException {
     if (size <= 0) {
       throw new LengthException("ERROR: SIZE CANNOT <= 0");
@@ -33,12 +32,21 @@ public class SparseIndexedList<T> implements IndexedList<T> {
     this.length = size;
     this.defaultValue = defaultValue;
   }
-
+  
+  /**
+   * Return the length of SparseIndexedList
+   * @return length of SparseIndexedList
+   */
   @Override
   public int length() {
     return length;
   }
   
+  /**
+   * Check whether a node has next (valid) node
+   * @param node The node to check
+   * @return false if node is the head of empty list or node.next is null
+   */
   private boolean hasNextNode(Node<T> node) {
     if (node == null || node.next == null) {
       return false;
@@ -46,7 +54,13 @@ public class SparseIndexedList<T> implements IndexedList<T> {
     return true;
   }
   
-  private Node<T> traverse(int index) throws IndexException {
+  /**
+   * Find whether a valid node of index exists in the list
+   * @param index The index of node
+   * @return Node if found, null if not
+   * @throws IndexException when index < 0 or index >= length()
+   */
+  private Node<T> find(int index) throws IndexException {
     checkIndex(index);
     Node<T> tracker = head;
     if (head == null) {
@@ -66,24 +80,42 @@ public class SparseIndexedList<T> implements IndexedList<T> {
     return null;
   }
   
+  /**
+   * Check whether index is in bound
+   * @param index index to be checked
+   * @throws IndexException if index < 0 or index >= length()
+   */
   private void checkIndex(int index) throws IndexException {
     if (index < 0 || index >= length()) {
       throw new IndexException("ERROR: INVALID INDEX");
     }
   }
   
+  /**
+   * Get the value of node at certain index
+   * @param index representing a position in this list.
+   * @return node's data T
+   * @throws IndexException if index < 0 or index >= length()
+   */
   @Override
   public T get(int index) throws IndexException {
-    Node<T> tracker = traverse(index);
-    if (tracker == null || tracker.index != index) {
+    Node<T> tracker = find(index);
+    if (tracker == null) {
       return defaultValue;
     }
     return tracker.data;
   }
-
+  
+  /**
+   * Put a node into the list at a certain index
+   * @param index representing a position in this list.
+   * @param value to be written at the given index.
+   *              Post: this.get(index) == value
+   * @throws IndexException if index < 0 or index >= length()
+   */
   @Override
   public void put(int index, T value) throws IndexException {
-    Node<T> tracker = traverse(index);
+    Node<T> tracker = find(index);
     if (tracker == null) {
       if (value == defaultValue) {
         return;
@@ -99,10 +131,15 @@ public class SparseIndexedList<T> implements IndexedList<T> {
     }
   }
   
+  /**
+   * Helper for put(), do specific job to insert node
+   * @param index index at which to be inserted
+   * @param value value of inserted node
+   */
   private void addNode(int index, T value) {
     Node<T> newNode = new Node<T>(index, value);
     
-    Node<T> target = find(index);
+    Node<T> target = traverse(index);
     if (head == null || target.index > index) {
       if (head != null) {
         newNode.next = head;
@@ -113,7 +150,12 @@ public class SparseIndexedList<T> implements IndexedList<T> {
     }
   }
   
-  private Node<T> find(int index) {
+  /**
+   * Find the previous node of given index, in order to modify the node at index
+   * @param index index of node
+   * @return  the previous node, null if list is empty
+   */
+  private Node<T> traverse(int index) {
     Node<T> tracker = head;
     if (tracker == null) {
       return null;
@@ -122,40 +164,62 @@ public class SparseIndexedList<T> implements IndexedList<T> {
       if (tracker.next.index >= index) {
         return tracker;
       }
-    
       tracker = tracker.next;
     }
     return tracker;
   }
   
+  /**
+   * Delete a node at given index
+   * @param index index of node to be deleted
+   */
   private void deleteNode(int index) {
-    Node<T> target = find(index);
+    Node<T> target = traverse(index);
     if (target == null || target == head) {
       head = null;
       return;
     }
     target.next = target.next.next;
   }
-
+  
+  /**
+   * Creates an iterator for SparseIndexedList
+   * @return the iterator
+   */
   @Override
   public Iterator<T> iterator() {
     return new SparseIndexedListIterator();
   }
-
+  
+  /**
+   * An implementation of iterator of SparseIndexedListIterator
+   */
   private class SparseIndexedListIterator implements Iterator<T> {
     private Node<T> current;
     private int cursor;
   
+    /**
+     * Constructor of iterator
+     */
     SparseIndexedListIterator() {
       current = head;
       cursor = 0;
     }
-    
+  
+    /**
+     * Check whether iterator has next node
+     * @return true if cursor between 0 and length-1(inclusive)
+     */
     @Override
     public boolean hasNext() {
       return cursor < length && cursor >= 0;
     }
-
+  
+    /**
+     * Returns data of current node, then proceed to next node
+     * @return Data of current node, defaultValue if node not valid
+     * @throws NoSuchElementException if current node is cursor out of bound
+     */
     @Override
     public T next() throws NoSuchElementException {
       T data = defaultValue;
@@ -174,11 +238,20 @@ public class SparseIndexedList<T> implements IndexedList<T> {
     }
   }
   
-  private class Node<T> {
+  /**
+   * An implementation of type Node
+   * @param <T> element type
+   */
+  private static class Node<T> {
     T data;
     int index;
     Node<T> next;
   
+    /**
+     * Constructor of Node
+     * @param index
+     * @param data
+     */
     Node(int index, T data) {
       this.data = data;
       this.index = index;
