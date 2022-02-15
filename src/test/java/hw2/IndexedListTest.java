@@ -91,6 +91,18 @@ public abstract class IndexedListTest {
   }
   
   @Test
+  @DisplayName("put() changes the default value after IndexedList is instantiated.")
+  void testPutChangesValueAfterConstructionReverseOrder() {
+    for (int i = 0; i < 10; i++) {
+      indexedList.put(i, 9-i);
+    }
+  
+    for (int i = 0; i < 10; i++) {
+      assertEquals(9-i, indexedList.get(i));
+    }
+  }
+  
+  @Test
   @DisplayName("put() overwrites the existing value at given index to provided value.")
   void testPutUpdatesValueAtGivenIndex() {
     indexedList.put(1, 8);
@@ -170,15 +182,16 @@ public abstract class IndexedListTest {
   }
   
   @Test
-  @DisplayName("test if iterator returns correct value when list is initiated and values inserted")
-  void testIteratorReturnsCorrectValueWhenListInitiatedAndValueInserted() {
+  @DisplayName("test if iterator returns correct value when list is initiated and values modified")
+  void testIteratorReturnsCorrectValueWhenListInitiatedAndModified() {
     for (int i = 0; i < 10; i++) {
-      indexedList.put(i, 8);
+      indexedList.put(i, i);
     }
     
     Iterator<Integer> it = indexedList.iterator();
     for (int i = 0; i < LENGTH; i++) {
-      assertEquals(8, it.next());
+      assertEquals(i, it.next());
     }
   }
+  
 }
