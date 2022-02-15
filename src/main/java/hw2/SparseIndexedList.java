@@ -14,8 +14,8 @@ import java.util.NoSuchElementException;
  */
 public class SparseIndexedList<T> implements IndexedList<T> {
   private Node<T> head;
-  private T defaultValue;
-  private int length;
+  private final T defaultValue;
+  private final int length;
   
   /**
    * Constructs a new SparseIndexedList of length size
@@ -48,10 +48,7 @@ public class SparseIndexedList<T> implements IndexedList<T> {
    * @return false if node is the head of empty list or node.next is null
    */
   private boolean hasNextNode(Node<T> node) {
-    if (node == null || node.next == null) {
-      return false;
-    }
-    return true;
+    return node != null && node.next != null;
   }
   
   /**
@@ -63,20 +60,25 @@ public class SparseIndexedList<T> implements IndexedList<T> {
   private Node<T> find(int index) throws IndexException {
     checkIndex(index);
     Node<T> tracker = head;
+    // List is empty
     if (head == null) {
       return null;
     }
     
+    // Proceed when index of tracker is smaller
     while (tracker.index < length) {
+      // Found
       if (tracker.index == index) {
         return tracker;
       }
+      // Proceed to next valid node
       if (hasNextNode(tracker)) {
         tracker = tracker.next;
         continue;
       }
       break;
     }
+    // Not found
     return null;
   }
   
@@ -100,9 +102,11 @@ public class SparseIndexedList<T> implements IndexedList<T> {
   @Override
   public T get(int index) throws IndexException {
     Node<T> tracker = find(index);
+    // No node with given index
     if (tracker == null) {
       return defaultValue;
     }
+    // Node found
     return tracker.data;
   }
   
@@ -116,8 +120,10 @@ public class SparseIndexedList<T> implements IndexedList<T> {
   @Override
   public void put(int index, T value) throws IndexException {
     Node<T> tracker = find(index);
+    // No node with give index
     if (tracker == null) {
       if (value == defaultValue) {
+        // Do nothing
         return;
       } else {
         addNode(index, value);
@@ -126,6 +132,7 @@ public class SparseIndexedList<T> implements IndexedList<T> {
       if (value == defaultValue) {
         deleteNode(index);
       } else {
+        // Modify value
         tracker.data = value;
       }
     }
@@ -137,10 +144,14 @@ public class SparseIndexedList<T> implements IndexedList<T> {
    * @param value value of inserted node
    */
   private void addNode(int index, T value) {
-    Node<T> newNode = new Node<T>(index, value);
-    
+    // Find the node before target
     Node<T> target = traverse(index);
+    
+    Node<T> newNode = new Node<T>(index, value);
+
+    // When node is after head
     if (head == null || target.index > index) {
+      // List is not empty
       if (head != null) {
         newNode.next = head;
       }
@@ -155,15 +166,20 @@ public class SparseIndexedList<T> implements IndexedList<T> {
    * @param index index of node
    * @return  the previous node, null if list is empty
    */
-  private Node<T> traverse(int index) {
+  private Node<T> traverse(int index) throws IndexException {
+    checkIndex(index);
     Node<T> tracker = head;
+    // List is empty
     if (tracker == null) {
       return null;
     }
+    // Proceed while next node is valid
     while (hasNextNode(tracker)) {
+      // Stop and return
       if (tracker.next.index >= index) {
         return tracker;
       }
+      // Proceed to next node
       tracker = tracker.next;
     }
     return tracker;
@@ -174,12 +190,15 @@ public class SparseIndexedList<T> implements IndexedList<T> {
    * @param index index of node to be deleted
    */
   private void deleteNode(int index) {
-    Node<T> target = traverse(index);
-    if (target == null || target == head) {
+    // Find node before target
+    Node<T> tracker = traverse(index);
+    
+    // Empty list or first node
+    if (tracker == null || tracker == head) {
       head = null;
       return;
     }
-    target.next = target.next.next;
+    tracker.next = tracker.next.next;
   }
   
   /**
@@ -223,13 +242,17 @@ public class SparseIndexedList<T> implements IndexedList<T> {
     @Override
     public T next() throws NoSuchElementException {
       T data = defaultValue;
+      // Index in bound
       if (hasNext()) {
+        // List not empty and cursor at current node
         if (current != null && cursor == current.index) {
           data = current.data;
+          // Proceed to next valid node
           if (hasNextNode(current)) {
             current = current.next;
           }
         }
+        // Increase cursor
         cursor++;
       } else {
         throw new NoSuchElementException();
