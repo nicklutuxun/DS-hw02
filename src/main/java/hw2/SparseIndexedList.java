@@ -34,7 +34,7 @@ public class SparseIndexedList<T> implements IndexedList<T> {
   }
   
   /**
-   * Return the length of SparseIndexedList
+   * Return the length of SparseIndexedList.
    * @return length of SparseIndexedList
    */
   @Override
@@ -43,16 +43,16 @@ public class SparseIndexedList<T> implements IndexedList<T> {
   }
   
   /**
-   * Check whether a node has next (valid) node
+   * Check whether a node has next (valid) node.
    * @param node The node to check
-   * @return false if node is the head of empty list or node.next is null
+   * @return false if node is the head of empty list or next of node is null
    */
   private boolean hasNextNode(Node<T> node) {
     return node != null && node.next != null;
   }
   
   /**
-   * Find whether a valid node of index exists in the list
+   * Find whether a valid node of index exists in the list.
    * @param index The index of node
    * @return Node if found, null if not
    * @throws IndexException when index < 0 or index >= length()
@@ -83,7 +83,7 @@ public class SparseIndexedList<T> implements IndexedList<T> {
   }
   
   /**
-   * Check whether index is in bound
+   * Check whether index is in bound.
    * @param index index to be checked
    * @throws IndexException if index < 0 or index >= length()
    */
@@ -94,7 +94,7 @@ public class SparseIndexedList<T> implements IndexedList<T> {
   }
   
   /**
-   * Get the value of node at certain index
+   * Get the value of node at certain index.
    * @param index representing a position in this list.
    * @return node's data T
    * @throws IndexException if index < 0 or index >= length()
@@ -111,7 +111,7 @@ public class SparseIndexedList<T> implements IndexedList<T> {
   }
   
   /**
-   * Put a node into the list at a certain index
+   * Put a node into the list at a certain index.
    * @param index representing a position in this list.
    * @param value to be written at the given index.
    *              Post: this.get(index) == value
@@ -124,7 +124,6 @@ public class SparseIndexedList<T> implements IndexedList<T> {
     if (tracker == null) {
       if (value == defaultValue) {
         // Do nothing
-        return;
       } else {
         addNode(index, value);
       }
@@ -139,7 +138,7 @@ public class SparseIndexedList<T> implements IndexedList<T> {
   }
   
   /**
-   * Helper for put(), do specific job to insert node
+   * Helper for put(), do specific job to insert node.
    * @param index index at which to be inserted
    * @param value value of inserted node
    */
@@ -147,10 +146,10 @@ public class SparseIndexedList<T> implements IndexedList<T> {
     // Find the node before target
     Node<T> target = traverse(index);
     
-    Node<T> newNode = new Node<T>(index, value);
+    Node<T> newNode = new Node<>(index, value);
 
     // When node is after head
-    if (head == null || target.index > index) {
+    if (target == null || target.index > index) {
       // List is not empty
       if (head != null) {
         newNode.next = head;
@@ -162,7 +161,7 @@ public class SparseIndexedList<T> implements IndexedList<T> {
   }
   
   /**
-   * Find the previous node of given index, in order to modify the node at index
+   * Find the previous node of given index, in order to modify the node at index.
    * @param index index of node
    * @return  the previous node, null if list is empty
    */
@@ -186,7 +185,7 @@ public class SparseIndexedList<T> implements IndexedList<T> {
   }
   
   /**
-   * Delete a node at given index
+   * Delete a node at given index.
    * @param index index of node to be deleted
    */
   private void deleteNode(int index) {
@@ -202,7 +201,7 @@ public class SparseIndexedList<T> implements IndexedList<T> {
   }
   
   /**
-   * Creates an iterator for SparseIndexedList
+   * Creates an iterator for SparseIndexedList.
    * @return the iterator
    */
   @Override
@@ -211,14 +210,14 @@ public class SparseIndexedList<T> implements IndexedList<T> {
   }
   
   /**
-   * An implementation of iterator of SparseIndexedListIterator
+   * An implementation of iterator of SparseIndexedListIterator.
    */
   private class SparseIndexedListIterator implements Iterator<T> {
     private Node<T> current;
     private int cursor;
   
     /**
-     * Constructor of iterator
+     * Constructor of iterator.
      */
     SparseIndexedListIterator() {
       current = head;
@@ -226,7 +225,7 @@ public class SparseIndexedList<T> implements IndexedList<T> {
     }
   
     /**
-     * Check whether iterator has next node
+     * Check whether iterator has next node.
      * @return true if cursor between 0 and length-1(inclusive)
      */
     @Override
@@ -235,7 +234,7 @@ public class SparseIndexedList<T> implements IndexedList<T> {
     }
   
     /**
-     * Returns data of current node, then proceed to next node
+     * Returns data of current node, then proceed to next node.
      * @return Data of current node, defaultValue if node not valid
      * @throws NoSuchElementException if current node is cursor out of bound
      */
@@ -262,7 +261,7 @@ public class SparseIndexedList<T> implements IndexedList<T> {
   }
   
   /**
-   * An implementation of type Node
+   * An implementation of type Node.
    * @param <T> element type
    */
   private static class Node<T> {
@@ -271,9 +270,9 @@ public class SparseIndexedList<T> implements IndexedList<T> {
     Node<T> next;
   
     /**
-     * Constructor of Node
-     * @param index
-     * @param data
+     * Constructor of Node.
+     * @param index index of node
+     * @param data  data of node
      */
     Node(int index, T data) {
       this.data = data;
