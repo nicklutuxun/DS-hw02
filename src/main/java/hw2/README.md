@@ -7,3 +7,36 @@ implementation of the `IndexedList` should be used to implement the
 `LinkedIndexList`, `SparseIndexedList`). And why?
    
 --------------- Write your answers below this line ----------------
+
+The answer to this question depends on the nature of this `Roster` class,
+and I will make analysis in different cases.
+
+### Roster with frequent access
+`ArrayIndexedList` is the best choice.
+
+In this case, once `Roster` is initialized and done entering elements, insertion
+or deletion will rarely be called. One example for this is the roster of a 
+university class. After the Add/Drop deadline, the information of students 
+will rarely change, while access to each student element within the list is
+frequent: Record attendance/homework/grades, etc. Among all three types,
+both `LinkedIndexList`, `SparseIndexedList` are expensive doing access since
+they are linked list, and linked list needs to start at the `head` and follow
+nodes one by one until target is reached. However `ArrayIndexedList` has the
+advantages that it allows cheap element access, and it also uses less memory than 
+linked lists.
+
+### Roster with frequent insertion/deletion
+`SparseIndexedList` is the best choice.
+
+In this case, after `Rosrter` is initialized, insertion and deletion will be
+called much more frequent than access operation. For example, it could be the roster
+for an online MOOC course which massive users register and drop it. Compared to accessing
+each user, insertion and deletion of enrolled users are far more important to keep track of.
+Among all three types, `ArrayIndexedList` Insertion/deletion to the front or at the middle
+of an array is expensive, since it requires shifting other elements to make space. Between
+`LinkedIndexList` and `SparseIndexedList`, `LinkedIndexList`, I think `SparseIndexedList` is
+preferred. This is because among all registered users, a great portion of them will be so 
+called _"Zombie Accounts"_ that were created and left abandoned, therefore, the account data
+of them are most likely be the same as default configurations. Since `SparseIndexedList` stores
+only non-default values, it saves a lot of space compared to `LinkedIndexList`, so `SparseIndexedList`
+is preferred.
