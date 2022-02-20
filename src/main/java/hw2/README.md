@@ -26,7 +26,7 @@ advantages that it allows cheap element access, and it also uses less memory tha
 linked lists.
 
 ### Roster with frequent insertion/deletion
-`SparseIndexedList` is the best choice.
+`LinkedIndexedList` is the best choice.
 
 In this case, after `Rosrter` is initialized, insertion and deletion will be
 called much more frequent than access operation. For example, it could be the roster
@@ -34,9 +34,7 @@ for an online MOOC course which massive users register and drop it. Compared to 
 each user, insertion and deletion of enrolled users are far more important to keep track of.
 Among all three types, `ArrayIndexedList` Insertion/deletion to the front or at the middle
 of an array is expensive, since it requires shifting other elements to make space. Between
-`LinkedIndexList` and `SparseIndexedList`, `LinkedIndexList`, I think `SparseIndexedList` is
-preferred. This is because among all registered users, a great portion of them will be so 
-called _"Zombie Accounts"_ that were created and left abandoned, therefore, the account data
-of them are most likely be the same as default configurations. Since `SparseIndexedList` stores
-only non-default values, it saves a lot of space compared to `LinkedIndexList`, so `SparseIndexedList`
-is preferred.
+`LinkedIndexList` and `SparseIndexedList`, `LinkedIndexList`, I think `LinkedIndexedList` is
+preferred. This is because we need different users' identifications, such as email addresses, to
+identify them. It is the same reason we should need use `SparseIndexedList` since we cannot 
+distinguish among default values.
