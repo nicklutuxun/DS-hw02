@@ -40,6 +40,26 @@ public abstract class IndexedListTest {
   }
   
   @Test
+  @DisplayName("get() obtains correct value after list is initiated.")
+  void testGetCorrectValueAfterListInitiated() {
+    for (int i = 0; i < indexedList.length(); i++ ) {
+      assertEquals(INITIAL, indexedList.get(i));
+    }
+  }
+  
+  @Test
+  @DisplayName("get() obtains correct value after insertion.")
+  void testGetCorrectValueAfterInsertion() {
+    for (int i = 0; i < indexedList.length(); i++ ) {
+      indexedList.put(i, i);
+    }
+    
+    for (int i = 0; i < indexedList.length(); i++ ) {
+      assertEquals(i, indexedList.get(i));
+    }
+  }
+  
+  @Test
   @DisplayName("constructor throws exception if LENGTH is <= 0.")
   void testConstructorThrowsExceptionForInvalidSize() {
     try {
